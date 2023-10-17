@@ -132,8 +132,10 @@ export const MapsClientPage = () => {
           </div>
         </div>
 
-        <form className="row mt-5 mb-4" onSubmit={calculateRoute}> {/**DATOS DE ENTRADA */}
+        <form className="row mt-5 mb-4 justify-content-center align-items-center" onSubmit={calculateRoute}> {/**DATOS DE ENTRADA */}
+          
           <div className="col-md-2 my-1 my-md-0">
+          <span className="d-md-none">Origen:</span>
             <select
               className="form-select"
               aria-label="Seleccione una ciudad"
@@ -148,6 +150,7 @@ export const MapsClientPage = () => {
             </select>
           </div>
           <div className="col-md-2 my-1 my-md-0">
+          <span className="d-md-none">Destino:</span>
             <Autocomplete>
               <input
                 type="text"
@@ -158,6 +161,7 @@ export const MapsClientPage = () => {
             </Autocomplete>
           </div>
           <div className="col-md-2 my-1 my-md-0">
+            <span className="d-md-none">Fecha de salida:</span>
             <input
               type="date"
               className="form-control"
@@ -168,6 +172,7 @@ export const MapsClientPage = () => {
             />
           </div>
           <div className="col-md-2 my-1 my-md-0">
+          <span className="d-md-none">Fecha de regreso:</span>
             <input
               type="date"
               className="form-control"
@@ -229,10 +234,10 @@ export const MapsClientPage = () => {
         </div>
 
         <div className="row"> {/**INFORMACION EXTRA */}
-          <div className="col-6">
+          <div className="col-12 col-md-6">
             <InfoInclude />
           </div>
-          <div className="col-6">
+          <div className="col-12 col-md-6">
             <InfoTransport />
           </div>
         </div>

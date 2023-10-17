@@ -12,9 +12,9 @@ export const InfoTransport = () => {
         <h2>NUESTRAS UNIDADES</h2>
       </div>
 
-      <div className='container mb-3'>
+      <div className='container'>
         <div className='row'>
-          <div className='col-6'>
+          <div className='col-12 col-md-6 mb-4'>
             <div className="card">
               <Carousel interval={60000}>
                 {/* Primera diapositiva */}
@@ -38,7 +38,7 @@ export const InfoTransport = () => {
                 {/* Agrega más diapositivas según sea necesario */}
               </Carousel>
               <div className="card-body">
-                <h5 className="card-title">Toyota Van</h5>
+                <h5 className="card-title">Van Hiace</h5>
                 <ul>
                   <li>Capacidad de 15 pasajeros</li>
                   <li>Aire acondicionado</li>
@@ -47,7 +47,7 @@ export const InfoTransport = () => {
               </div>
             </div>
           </div>
-          <div className='col-6'>
+          <div className='col-12 col-md-6 mb-4'>
             <div className="card">
               <Carousel interval={60000}>
                 {/* Primera diapositiva */}
@@ -71,7 +71,7 @@ export const InfoTransport = () => {
                 {/* Agrega más diapositivas según sea necesario */}
               </Carousel>
               <div className="card-body">
-                <h5 className="card-title">Sprinter Hiace</h5>
+                <h5 className="card-title">Sprinter</h5>
                 <ul>
                   <li>Capacidad de 18 pasajeros</li>
                   <li>Aire acondicionado</li>

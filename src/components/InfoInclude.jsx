@@ -6,7 +6,7 @@ export const InfoInclude = () => {
             </div>
 
             <div className='row'>
-                <div className="col-4 mb-2">
+                <div className="col-6 col-xl-4 mb-2">
                     <div className="card">
                         <div className="card-body text-center">
                             <i className="fa-solid fa-address-card"></i>
@@ -15,7 +15,7 @@ export const InfoInclude = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-4">
+                <div className="col-6 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center">
                             <i className="fas fa-car"></i>
@@ -24,7 +24,7 @@ export const InfoInclude = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-4">
+                <div className="col-6 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center">
                             <i className="fa-solid fa-tv"></i>
@@ -33,7 +33,7 @@ export const InfoInclude = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-4">
+                <div className="col-6 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center">
                             <i className="fas fa-gas-pump"></i>
@@ -42,7 +42,7 @@ export const InfoInclude = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-4">
+                <div className="col-6 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center">
                             <i className="fas fa-road"></i>
@@ -51,7 +51,7 @@ export const InfoInclude = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-4">
+                <div className="col-6 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center">
                             <i className="fas fa-user-shield"></i>
