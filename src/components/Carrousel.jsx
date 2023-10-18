@@ -22,7 +22,7 @@ export const Carrousel = () => {
                         <div className="sombra pb-1">
 
                             <h1>Chilpancingo - CDMX</h1>
-                            <h3>Desde $7,200</h3>
+                            <h3>Desde $9,000</h3>
                             <h5>Ruta popular</h5>
                         </div>
                     </Carousel.Caption>
