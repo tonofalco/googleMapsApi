@@ -12,16 +12,23 @@ export const MapsClientPage = () => {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [time, setTime] = useState(0);
   const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
-  // const [datesCount, setDatesCount] = useState(0);
+
   const [weekdaysCount, setWeekdaysCount] = useState(0);
   const [weekendsCount, setWeekendsCount] = useState(0);
   const [selectedOption, setSelectedOption] = useState('');
+
+  const [stops, setStops] = useState([]);
+  const [currentStop, setCurrentStop] = useState('');
+
+
 
   const sourceRef = useRef('');
   const destinationRef = useRef('');
   const departureDateRef = useRef('');
   const arrivalDateRef = useRef('');
+  const autocompleteRef = useRef(null);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
@@ -36,6 +43,29 @@ export const MapsClientPage = () => {
     arrivalDateRef.current.min = minArrivalDate.toISOString().split('T')[0];
   };
 
+  const addStop = () => {
+    if (stops.length < 1) {
+      if (autocompleteRef.current) {
+        const place = autocompleteRef.current.getPlace();
+        if (place && place.formatted_address) {
+          setStops([...stops, place.formatted_address]);
+          setCurrentStop(''); // Restablecer el campo de entrada
+        } else {
+          Swal.fire('Ingrese una parada válida', '', 'warning');
+        }
+      }
+    } else {
+      Swal.fire('Si desea cotizar mas de 1 parada porfavor comuniquese con un agente de ventas', '', 'warning');
+    }
+  };
+
+
+  const removeStop = (index) => {
+    const updatedStops = [...stops];
+    updatedStops.splice(index, 1);
+    setStops(updatedStops);
+  };
+
 
   const calculateRoute = async (event) => {
     event.preventDefault();
@@ -45,6 +75,7 @@ export const MapsClientPage = () => {
     const arrivalDate = new Date(arrivalDateRef.current.value);
 
     console.log(SourceAndDestination);
+    console.log(stops);
 
     // Sweetalert2
     if (SourceAndDestination.some(value => !value) || departureDate == 'Invalid Date' || arrivalDate == 'Invalid Date') {
@@ -52,9 +83,16 @@ export const MapsClientPage = () => {
       return;
     }
 
+    const waypoints = stops.map((stop) => ({
+      location: stop,
+      stopover: true,
+    }));
+
+
     const directionsRequest = {
       origin: SourceAndDestination.shift(),
       destination: SourceAndDestination.pop(),
+      waypoints,
       travelMode: 'DRIVING'
     };
 
@@ -67,8 +105,26 @@ export const MapsClientPage = () => {
     const generatePath = (response, status) => {
       if (status === 'OK') {
         setDirectionsResponse(response);
-        setDistance(response.routes[0].legs[0].distance.text);
+
+        const route = response.routes[0];
+        let totalDistance = 0;
+        let totalDuration = 0;
+
+        for (let i = 0; i < route.legs.length; i++) {
+          totalDistance += route.legs[i].distance.value;
+          totalDuration += route.legs[i].duration.value;
+        }
+
+        // Conversión de minutos a horas y minutos
+        const hours = Math.floor((totalDuration / 60) / 60);
+        const minutes = totalDuration % 60;
+
+        setDistance((totalDistance / 1000).toFixed(1)); // Convertir a kilómetros y redondear a dos decimales
+        setTime(`${hours} horas ${minutes} minutos`);
+
         setDuration(durationInDays.toString()); // Convertir a cadena de texto antes de establecerlo
+        // const totalDurationInMinutes = totalDistance / 60; // Convertir a minutos
+
 
         // Determinar días de la semana y días de fin de semana
         const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -104,6 +160,7 @@ export const MapsClientPage = () => {
     setDirectionsResponse(null);
     setDistance(0);
     setDuration(0);
+    setStops([])
     sourceRef.current.value = '';
     destinationRef.current.value = '';
     departureDateRef.current.value = '';
@@ -133,74 +190,152 @@ export const MapsClientPage = () => {
         </div>
 
         <form className="row mt-5 mb-4 justify-content-center align-items-center" onSubmit={calculateRoute}> {/**DATOS DE ENTRADA */}
-          
-          <div className="col-md-2 my-1 my-md-0">
-          <span className="d-md-none">Origen:</span>
-            <select
-              className="form-select"
-              aria-label="Seleccione una ciudad"
-              value={selectedOption}
-              onChange={handleOptionChange}
-              ref={sourceRef}
-            >
-              <option value="" disabled>Seleccione una ciudad</option>
-              {cityOptions.map((city) => (
-                <option value={city} key={city}>{city}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-md-2 my-1 my-md-0">
-          <span className="d-md-none">Destino:</span>
-            <Autocomplete>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Ciudad de Destino"
-                ref={destinationRef}
-              />
-            </Autocomplete>
-          </div>
-          <div className="col-md-2 my-1 my-md-0">
-            <span className="d-md-none">Fecha de salida:</span>
-            <input
-              type="date"
-              className="form-control"
-              id="departureDate"
-              placeholder="Fecha de Salida"
-              onChange={handleDepartureDateChange}
-              ref={departureDateRef}
-            />
-          </div>
-          <div className="col-md-2 my-1 my-md-0">
-          <span className="d-md-none">Fecha de regreso:</span>
-            <input
-              type="date"
-              className="form-control"
-              id="arrivalDate"
-              placeholder="Fecha de Llegada"
-              ref={arrivalDateRef}
-            />
-          </div>
-          <div className="col-md-2 my-2 my-md-0">
-            <div className="d-grid gap-1">
-              <button
-                type="button"
-                className="btn btn-primary btn-block"
-                onClick={calculateRoute}
-              >
-                Cotizar
-              </button>
+
+          <div className="col-sm-6 col-12">
+            <div className="row">
+              <h2>Ingresa tu ruta</h2>
+              <div className="col-md-6 my-1 my-md-0">
+                <span>Origen:</span>
+                <select
+                  className="form-select"
+                  aria-label="Seleccione una ciudad"
+                  value={selectedOption}
+                  onChange={handleOptionChange}
+                  ref={sourceRef}
+                >
+                  <option value="" disabled>Seleccione una ciudad</option>
+                  {cityOptions.map((city) => (
+                    <option value={city} key={city}>{city}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-6 my-1 my-md-0">
+                <span>Destino:</span>
+                <Autocomplete>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Ciudad de Destino"
+                    ref={destinationRef}
+                  />
+                </Autocomplete>
+              </div>
             </div>
           </div>
-          <div className="col-md-2">
-            <div className="d-grid gap-2">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={clearRoute}
-              >
-                Limpiar
-              </button>
+
+          <div className="col-sm-6 col-12 mt-3 mt-sm-0">
+            <div className="row">
+              <h2>Fechas del viaje</h2>
+              <div className="col-md-6 my-1 my-md-0">
+                <span className="">Salida:</span>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="departureDate"
+                  placeholder="Fecha de Salida"
+                  onChange={handleDepartureDateChange}
+                  ref={departureDateRef}
+                />
+              </div>
+              <div className="col-md-6 my-1 my-md-0">
+                <span className="">Regreso:</span>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="arrivalDate"
+                  placeholder="Fecha de Llegada"
+                  ref={arrivalDateRef}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 mt-4">
+            <div className="row">
+              <h2>Parada </h2>
+
+
+
+            </div>
+          </div>
+
+          <div className="col-6 col-sm-6 col-12">
+            <div className="row">
+              <div className="col-md-6 ">
+                <Autocomplete
+                  onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                  onPlaceSelected={(place) => {
+                    if (place.formatted_address) {
+                      setCurrentStop(place.formatted_address);
+                    }
+                  }}
+                >
+                  <div className="input-group"> {/* Contenedor para input y botón */}
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Agregar Parada (opcional)"
+                      value={currentStop}
+                      onChange={(e) => setCurrentStop(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          addStop();
+                        }
+                      }}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={addStop}
+                      >
+                        <i className="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </Autocomplete>
+              </div>
+
+              {/* Lista de paradas */}
+              <div className="col-md-6  ">
+                <ul className="border border-black rounded">
+                  {stops.map((stop, index) => (
+                    <li key={index} className=" d-flex justify-content-between align-items-center">
+                      {stop}
+                      <button className="btn btn-danger" onClick={() => removeStop(index)}>
+                        <i className="fa-solid fa-minus"></i>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div className="col-sm-6 col-12">
+            <div className="row justify-content-end">
+              <div className="col-lg-3 col-md-6 ">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
+                  onClick={calculateRoute}
+                >
+                  Cotizar
+                </button>
+              </div>
+              <div className="col-lg-3 col-md-6  ">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
+                  onClick={clearRoute}
+                >
+                  Limpiar
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -214,7 +349,7 @@ export const MapsClientPage = () => {
                 departureRefvalue={departureDateRef.current.value}
                 arrivalRefValue={arrivalDateRef.current.value}
                 distance={distance}
-                directionsResponseValue={directionsResponse.routes[0].legs[0].duration.text}
+                time={time}
                 duration={duration}
                 weekdaysCount={weekdaysCount}
                 weekendsCount={weekendsCount}
@@ -224,8 +359,8 @@ export const MapsClientPage = () => {
             }
           </div>
 
-          <div className="col-md-8"> {/**MAPA DE GOOGLE */}
-            <div className="mb-4" style={{ height: 'calc(95vh - 64px)' }}>
+          <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
+            <div style={{ height: 'calc(95vh - 64px)' }}>
               <Map
                 mapKey={mapKey}
                 directionsResponse={directionsResponse} />
@@ -233,11 +368,11 @@ export const MapsClientPage = () => {
           </div>
         </div>
 
-        <div className="row"> {/**INFORMACION EXTRA */}
-          <div className="col-12 col-md-6">
+        <div className="row mt-3"> {/**INFORMACION EXTRA */}
+          <div className="col-md-6 col-12">
             <InfoInclude />
           </div>
-          <div className="col-12 col-md-6">
+          <div className="col-md-6 col-12 mt-md-0 mt-3">
             <InfoTransport />
           </div>
         </div>

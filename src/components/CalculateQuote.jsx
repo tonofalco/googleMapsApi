@@ -6,7 +6,7 @@ export const CalculateQuote = ({
     departureRefvalue,
     arrivalRefValue,
     distance,
-    directionsResponseValue,
+    time,
     duration,
     weekdaysCount,
     weekendsCount,
@@ -71,9 +71,9 @@ export const CalculateQuote = ({
         destinationRefValue: PropTypes.string,
         departureRefvalue: PropTypes.string,
         arrivalRefValue: PropTypes.string,
-        distance: PropTypes.number,
-        directionsResponseValue: PropTypes.string,
-        duration: PropTypes.number,
+        distance: PropTypes.string,
+        time: PropTypes.string,
+        duration: PropTypes.string,
         weekdaysCount: PropTypes.number,
         weekendsCount: PropTypes.number,
     };
@@ -84,8 +84,8 @@ export const CalculateQuote = ({
                 <h3 className='mb-3'>DATOS DEL VIAJE</h3>
                 <div><b>Origen:</b> {sourceRefValue}</div>
                 <div><b>Destino:</b> {destinationRefValue}</div>
-                <div><b>Distancia:</b> {distance}</div>
-                <div><b>Tiempo de recorido:</b> {directionsResponseValue}</div>
+                <div><b>Distancia:</b> {distance} kms</div>
+                <div><b>Tiempo de recorido:</b> {time}</div>
                 <div><b>Dias:</b> {duration}</div>
                 <br /><hr />
 
@@ -125,6 +125,7 @@ export const CalculateQuote = ({
                     <li><small>Precio final no inlcuye estacionamientos</small></li>
 
                 </ul>
+                <hr />
 
 
                 {/* <div className='d-flex aling-items-center justify-content-center'>
