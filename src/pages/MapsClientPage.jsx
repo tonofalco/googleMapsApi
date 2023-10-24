@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
+import ReCAPTCHA from 'react-google-recaptcha'
 import Swal from 'sweetalert2';
 
 import { InfoInclude, InfoTransport, CalculateQuote, Carrousel, Map } from '../components/';
@@ -13,7 +13,9 @@ export const MapsClientPage = () => {
   const [distance, setDistance] = useState(0);
   const [duration, setDuration] = useState(0);
   const [time, setTime] = useState(0);
+
   const [mapKey, setMapKey] = useState(0); // Nuevo estado mapKey
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const [weekdaysCount, setWeekdaysCount] = useState(0);
   const [weekendsCount, setWeekendsCount] = useState(0);
@@ -22,19 +24,19 @@ export const MapsClientPage = () => {
   const [stops, setStops] = useState([]);
   const [currentStop, setCurrentStop] = useState('');
 
-
-
   const sourceRef = useRef('');
   const destinationRef = useRef('');
   const departureDateRef = useRef('');
   const arrivalDateRef = useRef('');
   const autocompleteRef = useRef(null);
+  const captcha = useRef(null)
+
+  const cityOptions = ['Chilpancingo', 'Acapulco'];
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
     libraries: libraries
   });
-
 
   const handleDepartureDateChange = (event) => {
     const selectedDepartureDate = new Date(event.target.value);
@@ -59,7 +61,6 @@ export const MapsClientPage = () => {
     }
   };
 
-
   const removeStop = (index) => {
     const updatedStops = [...stops];
     updatedStops.splice(index, 1);
@@ -74,20 +75,20 @@ export const MapsClientPage = () => {
     const departureDate = new Date(departureDateRef.current.value);
     const arrivalDate = new Date(arrivalDateRef.current.value);
 
-    console.log(SourceAndDestination);
-    console.log(stops);
-
-    // Sweetalert2
     if (SourceAndDestination.some(value => !value) || departureDate == 'Invalid Date' || arrivalDate == 'Invalid Date') {
-      Swal.fire('Faltan campos por seleccionar', '', 'warning');
+      Swal.fire('Faltan campos por llenar', '', 'warning');
+      return;
+    } else if (!captcha.current.getValue()) {
+      Swal.fire('Por favor verifica el captcha', '', 'warning');
       return;
     }
+
+    captcha.current.getValue() ? setCaptchaValue(true) : setCaptchaValue(false);
 
     const waypoints = stops.map((stop) => ({
       location: stop,
       stopover: true,
     }));
-
 
     const directionsRequest = {
       origin: SourceAndDestination.shift(),
@@ -96,13 +97,12 @@ export const MapsClientPage = () => {
       travelMode: 'DRIVING'
     };
 
-    const differenceInMilliseconds = arrivalDate - departureDate;
-    const millisecondsPerDay = 1000 * 60 * 60 * 24;
-    const durationInDays = Math.ceil(differenceInMilliseconds / millisecondsPerDay);
-
-
-
     const generatePath = (response, status) => {
+
+      const differenceInMilliseconds = arrivalDate - departureDate;
+      const millisecondsPerDay = 1000 * 60 * 60 * 24;
+      const durationInDays = Math.ceil(differenceInMilliseconds / millisecondsPerDay);
+
       if (status === 'OK') {
         setDirectionsResponse(response);
 
@@ -123,8 +123,6 @@ export const MapsClientPage = () => {
         setTime(`${hours} horas ${minutes} minutos`);
 
         setDuration(durationInDays.toString()); // Convertir a cadena de texto antes de establecerlo
-        // const totalDurationInMinutes = totalDistance / 60; // Convertir a minutos
-
 
         // Determinar días de la semana y días de fin de semana
         const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -155,7 +153,6 @@ export const MapsClientPage = () => {
     directionsService.route(directionsRequest, generatePath);
   }
 
-
   const clearRoute = () => {
     setDirectionsResponse(null);
     setDistance(0);
@@ -165,6 +162,7 @@ export const MapsClientPage = () => {
     destinationRef.current.value = '';
     departureDateRef.current.value = '';
     arrivalDateRef.current.value = '';
+    captcha.current.reset();
     setMapKey((prevKey) => prevKey + 1); // Incrementar mapKey para forzar el desmontaje y remontaje del componente GoogleMap
   }
 
@@ -172,11 +170,14 @@ export const MapsClientPage = () => {
     return <div>Cargando...</div>
   }
 
-  const cityOptions = ['Chilpancingo', 'Acapulco'];
-
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
+
+  const onChange = () => {
+    console.log('Cambio validacion Captcha');
+  }
+
 
   return (
     <>
@@ -253,9 +254,6 @@ export const MapsClientPage = () => {
           <div className="col-12 mt-4">
             <div className="row">
               <h2>Parada </h2>
-
-
-
             </div>
           </div>
 
@@ -285,11 +283,13 @@ export const MapsClientPage = () => {
                     />
                     <div className="input-group-append">
                       <button
-                        type="button"
+                        type="submit"
                         className="btn btn-success"
-                        onClick={addStop}
-                      >
-                        <i className="fa-solid fa-plus"></i>
+                        onClick={() => {
+                          addStop();       // Llama a la primera función
+                          calculateRoute(); // Llama a la segunda función después de la primera
+                        }}
+                      ><i className="fa-solid fa-plus"></i>
                       </button>
                     </div>
                   </div>
@@ -302,69 +302,83 @@ export const MapsClientPage = () => {
                   {stops.map((stop, index) => (
                     <li key={index} className=" d-flex justify-content-between align-items-center">
                       {stop}
-                      <button className="btn btn-danger" onClick={() => removeStop(index)}>
+                      <button className="btn btn-danger"
+                        onClick={() => {
+                          removeStop(index);       // Llama a la primera función
+                          clearRoute(); // Llama a la segunda función después de la primera
+                        }} >
                         <i className="fa-solid fa-minus"></i>
-                      </button>
+                    </button>
                     </li>
                   ))}
-                </ul>
-              </div>
+              </ul>
             </div>
           </div>
+      </div>
 
-
-
-          <div className="col-sm-6 col-12">
-            <div className="row justify-content-end">
-              <div className="col-lg-3 col-md-6 ">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
-                  onClick={calculateRoute}
-                >
-                  Cotizar
-                </button>
-              </div>
-              <div className="col-lg-3 col-md-6  ">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
-                  onClick={clearRoute}
-                >
-                  Limpiar
-                </button>
-              </div>
-            </div>
+      <div className="col-sm-6 col-12">
+        <div className="row justify-content-end">
+          <div className="col-md-6 col-12 ">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
+              onClick={calculateRoute}
+            >
+              Cotizar
+            </button>
           </div>
-        </form>
-
+          <div className="col-md-6 col-12 mt-md-0 mt-2  ">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
+              onClick={clearRoute}
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="col-12">
         <div className="row">
-          <div className="col-md-4 mt-4">  {/*DATOS DE SALIDA */}
-            {directionsResponse ? (
-              <CalculateQuote
-                sourceRefValue={sourceRef.current.value}
-                destinationRefValue={destinationRef.current.value}
-                departureRefvalue={departureDateRef.current.value}
-                arrivalRefValue={arrivalDateRef.current.value}
-                distance={distance}
-                time={time}
-                duration={duration}
-                weekdaysCount={weekdaysCount}
-                weekendsCount={weekendsCount}
-              />
-            ) : <h3>Esperando cotizacion...</h3>
-
-            }
+          <div className="col-12 mt-4 ">
+            <ReCAPTCHA
+              ref={captcha}
+              sitekey={import.meta.env.VITE_CAPTCHA_API}
+              onChange={onChange}
+            />
           </div>
+        </div>
+      </div>
 
-          <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
-            <div style={{ height: 'calc(95vh - 64px)' }}>
-              <Map
-                mapKey={mapKey}
-                directionsResponse={directionsResponse} />
-            </div>
+    </form >
+
+      <div className="row">
+
+        <div className="col-md-4 mt-4">  {/*DATOS DE SALIDA */}
+          {captchaValue && directionsResponse ? (
+            <CalculateQuote
+              sourceRefValue={sourceRef.current.value}
+              destinationRefValue={destinationRef.current.value}
+              departureRefvalue={departureDateRef.current.value}
+              arrivalRefValue={arrivalDateRef.current.value}
+              distance={distance}
+              time={time}
+              duration={duration}
+              weekdaysCount={weekdaysCount}
+              weekendsCount={weekendsCount}
+              stops={stops}
+            />
+          ) : <h3>Esperando cotizacion...</h3>
+          }
+        </div>
+
+        <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
+          <div style={{ height: 'calc(95vh - 64px)' }}>
+            <Map
+              mapKey={mapKey}
+              directionsResponse={directionsResponse} />
           </div>
         </div>
 
@@ -376,8 +390,10 @@ export const MapsClientPage = () => {
             <InfoTransport />
           </div>
         </div>
-
       </div>
+
+      </div >
+
     </>
   );
 };

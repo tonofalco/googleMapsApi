@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 export const CalculateQuote = ({
     sourceRefValue,
@@ -10,6 +11,7 @@ export const CalculateQuote = ({
     duration,
     weekdaysCount,
     weekendsCount,
+    stops
 }) => {
 
     const calcularCosto = (dias, costoPorDia) => {
@@ -40,17 +42,22 @@ export const CalculateQuote = ({
         ? new Date(arrivalRefValue).toLocaleDateString('es-ES')
         : '';
 
-
     const phoneNumber = '7472269399';
 
+    const paradaValue = stops.length <= 0 ?  'No' : stops
+    console.log(stops.length);
+    console.log(stops[0]);
+
     const messageVan = `Hola Viajes Quality, Quiero reservar. ${duration}d. - del ${departureDateValue} al ${arrivalDateValue}.
-    Salida: ${sourceRefValue}
-    Destino: ${destinationRefValue}
-    con precio total de: $${precioTotalVan} | Toyota Van ${plazasVan} plazas;
+    - Salida: ${sourceRefValue}
+    - Parada: ${paradaValue}
+    - Destino: ${destinationRefValue}
+    Toyota Van ${plazasVan} plazas | con precio total de: $${precioTotalVan} ;
     __VQC__`;
 
     const messageSprinter = `Hola Viajes Quality, Quiero reservar. 2d. - del ${departureDateValue} al ${arrivalDateValue}.
     Salida: ${sourceRefValue}
+    Parada: ${paradaValue}
     Destino: ${destinationRefValue}
     con precio total de: $${precioTotalSprinter} | Sprinter Hiace 18 plazas;
     __VQC__`;
@@ -76,6 +83,7 @@ export const CalculateQuote = ({
         duration: PropTypes.string,
         weekdaysCount: PropTypes.number,
         weekendsCount: PropTypes.number,
+        stops: propTypes.isRequiredButNullable,
     };
 
     return (
@@ -83,6 +91,7 @@ export const CalculateQuote = ({
             <div className="text-start" style={{ marginTop: "-25px" }}>
                 <h3 className='mb-3'>DATOS DEL VIAJE</h3>
                 <div><b>Origen:</b> {sourceRefValue}</div>
+                {stops.length >= 1 ? <div><b>Parada:</b> {stops}</div> : null}
                 <div><b>Destino:</b> {destinationRefValue}</div>
                 <div><b>Distancia:</b> {distance} kms</div>
                 <div><b>Tiempo de recorido:</b> {time}</div>
