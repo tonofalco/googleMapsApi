@@ -76,7 +76,7 @@ export const MapsClientPage = () => {
     const arrivalDate = new Date(arrivalDateRef.current.value);
 
     if (SourceAndDestination.some(value => !value) || departureDate == 'Invalid Date' || arrivalDate == 'Invalid Date') {
-      Swal.fire('Faltan campos por llenar', '', 'warning');
+      Swal.fire('Faltan campos por llenar', ' Por favor llena todos los campos obligatorios para calcular la ruta', 'error',);
       return;
     } else if (!captcha.current.getValue()) {
       Swal.fire('Por favor verifica el captcha', '', 'warning');
@@ -120,7 +120,7 @@ export const MapsClientPage = () => {
         const minutes = totalDuration % 60;
 
         setDistance((totalDistance / 1000).toFixed(1)); // Convertir a kilómetros y redondear a dos decimales
-        setTime(`${hours} horas ${minutes} minutos`);
+        setTime(`${hours} h. ${minutes} min.`); // Formato de horas y minutos
 
         setDuration(durationInDays.toString()); // Convertir a cadena de texto antes de establecerlo
 
@@ -308,89 +308,89 @@ export const MapsClientPage = () => {
                           clearRoute(); // Llama a la segunda función después de la primera
                         }} >
                         <i className="fa-solid fa-minus"></i>
-                    </button>
+                      </button>
                     </li>
                   ))}
-              </ul>
+                </ul>
+              </div>
             </div>
           </div>
-      </div>
 
-      <div className="col-sm-6 col-12">
-        <div className="row justify-content-end">
-          <div className="col-md-6 col-12 ">
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
-              onClick={calculateRoute}
-            >
-              Cotizar
-            </button>
+          <div className="col-sm-6 col-12">
+            <div className="row justify-content-end">
+              <div className="col-md-6 col-12 ">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
+                  onClick={calculateRoute}
+                >
+                  Cotizar
+                </button>
+              </div>
+              <div className="col-md-6 col-12 mt-md-0 mt-2  ">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
+                  onClick={clearRoute}
+                >
+                  Limpiar
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="col-md-6 col-12 mt-md-0 mt-2  ">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ width: '100%' }} // Utilizar estilo en línea para establecer el ancho al 100%
-              onClick={clearRoute}
-            >
-              Limpiar
-            </button>
+          <div className="col-12">
+            <div className="row">
+              <div className="col-12 mt-4 ">
+                <ReCAPTCHA
+                  ref={captcha}
+                  sitekey={import.meta.env.VITE_CAPTCHA_API}
+                  onChange={onChange}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="col-12">
+
+        </form >
+
         <div className="row">
-          <div className="col-12 mt-4 ">
-            <ReCAPTCHA
-              ref={captcha}
-              sitekey={import.meta.env.VITE_CAPTCHA_API}
-              onChange={onChange}
-            />
+
+          <div className="col-md-4 mt-4">  {/*DATOS DE SALIDA */}
+            {captchaValue && directionsResponse ? (
+              <CalculateQuote
+                sourceRefValue={sourceRef.current.value}
+                destinationRefValue={destinationRef.current.value}
+                departureRefvalue={departureDateRef.current.value}
+                arrivalRefValue={arrivalDateRef.current.value}
+                distance={distance}
+                time={time}
+                duration={duration}
+                weekdaysCount={weekdaysCount}
+                weekendsCount={weekendsCount}
+                stops={stops}
+              />
+            ) : <h3>Esperando cotizacion...</h3>
+            }
+          </div>
+
+          <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
+            <div style={{ height: 'calc(95vh - 64px)' }}>
+              <Map
+                mapKey={mapKey}
+                directionsResponse={directionsResponse} />
+            </div>
+          </div>
+
+          <div className="row mt-3"> {/**INFORMACION EXTRA */}
+            <div className="col-md-6 col-12">
+              <InfoInclude />
+            </div>
+            <div className="col-md-6 col-12 mt-md-0 mt-3">
+              <InfoTransport />
+            </div>
           </div>
         </div>
-      </div>
-
-    </form >
-
-      <div className="row">
-
-        <div className="col-md-4 mt-4">  {/*DATOS DE SALIDA */}
-          {captchaValue && directionsResponse ? (
-            <CalculateQuote
-              sourceRefValue={sourceRef.current.value}
-              destinationRefValue={destinationRef.current.value}
-              departureRefvalue={departureDateRef.current.value}
-              arrivalRefValue={arrivalDateRef.current.value}
-              distance={distance}
-              time={time}
-              duration={duration}
-              weekdaysCount={weekdaysCount}
-              weekendsCount={weekendsCount}
-              stops={stops}
-            />
-          ) : <h3>Esperando cotizacion...</h3>
-          }
-        </div>
-
-        <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
-          <div style={{ height: 'calc(95vh - 64px)' }}>
-            <Map
-              mapKey={mapKey}
-              directionsResponse={directionsResponse} />
-          </div>
-        </div>
-
-        <div className="row mt-3"> {/**INFORMACION EXTRA */}
-          <div className="col-md-6 col-12">
-            <InfoInclude />
-          </div>
-          <div className="col-md-6 col-12 mt-md-0 mt-3">
-            <InfoTransport />
-          </div>
-        </div>
-      </div>
 
       </div >
 

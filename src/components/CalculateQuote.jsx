@@ -130,8 +130,9 @@ export const CalculateQuote = ({
                 <ul>
                     <li><small>En caso de no presentarse en la salida, el anticipo queda a beneficio de la empresa.</small></li>
                     <li><small>El contratante será responsable de los desperfectos causados a la unidad en servicio.</small></li>
-                    <li><small>El número de pasajeros no excederá de lo indicado</small></li>
+                    <li><small>Precio aproximado, para reservar porfavor comuniquese con la empresa.</small></li>
                     <li><small>Precio final no inlcuye estacionamientos</small></li>
+                    
 
                 </ul>
                 <hr />
