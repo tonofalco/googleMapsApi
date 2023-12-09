@@ -18,22 +18,24 @@
   <script type="module" src="/src/main.jsx"></script>
 
   <!-- GetButton.io widget -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     (function () {
         var options = {
             facebook: "647840525251327", // Facebook page ID
             whatsapp: "+527472269399", // WhatsApp number
             call_to_action: "¿Tienes dudas? Envíanos un mensaje", // Call to action
             button_color: "#03e9bb", // Color of button
-            position: "right", // Position may be 'right' or 'left'
+            position: "left", // Position may be 'right' or 'left'
             order: "whatsapp,facebook", // Order of buttons
         };
         var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
         var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
         s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
         var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+        var widgetElement = document.querySelector('.wh-widget-button-container');
+        widgetElement.style.bottom = '15px';
     })();
-</script>
+</script> -->
   <!-- /GetButton.io widget -->
 
 </body>
