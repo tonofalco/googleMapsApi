@@ -182,7 +182,7 @@ export const MapsClientPage = () => {
   return (
     <>
 
-      <div className="container">
+      <div className="container-fluid">
 
         <div className="row"> {/**CARROUSEL DE IMAGENES */}
           <div className="col-12 d-flex aling-items-center justify-content-center">
