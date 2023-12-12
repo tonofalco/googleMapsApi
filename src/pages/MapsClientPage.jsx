@@ -1,13 +1,30 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 import ReCAPTCHA from 'react-google-recaptcha'
 import Swal from 'sweetalert2';
 
+
 import { InfoInclude, InfoTransport, CalculateQuote, Carrousel, Map } from '../components/';
+import { useConfigStore } from '../hooks/useConfigStore';
 
 const libraries = ['places'];
 
 export const MapsClientPage = () => {
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { costsValue, startLoadingCosts } = useConfigStore();
+
+  useEffect(() => {
+      if (!isLoading) {
+          const fetchData = async () => {
+              setIsLoading(true);
+              await startLoadingCosts();
+          };
+
+          fetchData();
+      }
+  }, [isLoading, startLoadingCosts, costsValue]);
 
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState(0);
@@ -375,6 +392,7 @@ export const MapsClientPage = () => {
                 weekdaysCount={weekdaysCount}
                 weekendsCount={weekendsCount}
                 stops={stops}
+                costsValue={costsValue}
               />
             ) : <h3>Esperando cotizacion...</h3>
             }
