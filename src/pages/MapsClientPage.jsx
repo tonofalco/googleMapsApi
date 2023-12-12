@@ -41,7 +41,7 @@ export const MapsClientPage = () => {
   const handleDepartureDateChange = (event) => {
     const selectedDepartureDate = new Date(event.target.value);
     const minArrivalDate = new Date(selectedDepartureDate);
-    minArrivalDate.setDate(minArrivalDate.getDate() + 1);
+    minArrivalDate.setDate(minArrivalDate.getDate());
     arrivalDateRef.current.min = minArrivalDate.toISOString().split('T')[0];
   };
 
@@ -66,7 +66,6 @@ export const MapsClientPage = () => {
     updatedStops.splice(index, 1);
     setStops(updatedStops);
   };
-
 
   const calculateRoute = async (event) => {
     event.preventDefault();
@@ -101,7 +100,7 @@ export const MapsClientPage = () => {
 
       const differenceInMilliseconds = arrivalDate - departureDate;
       const millisecondsPerDay = 1000 * 60 * 60 * 24;
-      const durationInDays = Math.ceil(differenceInMilliseconds / millisecondsPerDay);
+      const durationInDays = Math.ceil(differenceInMilliseconds / millisecondsPerDay) + 1;
 
       if (status === 'OK') {
         setDirectionsResponse(response);
@@ -144,14 +143,21 @@ export const MapsClientPage = () => {
 
         setWeekdaysCount(weekdays.length);
         setWeekendsCount(weekends.length);
+        
       } else {
         console.error('Error al calcular la ruta:', status);
       }
+      
     };
 
     const directionsService = new window.google.maps.DirectionsService();
     directionsService.route(directionsRequest, generatePath);
+
+    const element = document.getElementById('datos-salida');
+    element.scrollIntoView({ behavior: 'smooth' });
   }
+
+  // console.log(`dias total: ${duration}, entre semana ${weekdaysCount}, fin semana ${weekendsCount} `);
 
   const clearRoute = () => {
     setDirectionsResponse(null);
@@ -166,10 +172,6 @@ export const MapsClientPage = () => {
     setMapKey((prevKey) => prevKey + 1); // Incrementar mapKey para forzar el desmontaje y remontaje del componente GoogleMap
   }
 
-  if (!isLoaded) {
-    return <div>Cargando...</div>
-  }
-
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
@@ -178,11 +180,15 @@ export const MapsClientPage = () => {
     console.log('Cambio validacion Captcha');
   }
 
+  if (!isLoaded) {
+    return <div>Cargando...</div>
+  }
+
 
   return (
     <>
 
-      <div className="container-fluid">
+      <div className="container">
 
         <div className="row"> {/**CARROUSEL DE IMAGENES */}
           <div className="col-12 d-flex aling-items-center justify-content-center">
@@ -354,9 +360,9 @@ export const MapsClientPage = () => {
 
         </form >
 
-        <div className="row">
+        <div className="row" id="datos-salida">
 
-          <div className="col-md-4 mt-4">  {/*DATOS DE SALIDA */}
+          <div className="col-md-4 mt-4" >  {/*DATOS DE SALIDA */}
             {captchaValue && directionsResponse ? (
               <CalculateQuote
                 sourceRefValue={sourceRef.current.value}

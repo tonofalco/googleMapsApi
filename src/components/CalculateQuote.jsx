@@ -45,8 +45,8 @@ export const CalculateQuote = ({
     const phoneNumber = '7472269399';
 
     const paradaValue = stops.length <= 0 ?  'No' : stops
-    console.log(stops.length);
-    console.log(stops[0]);
+    // console.log(stops.length);
+    // console.log(stops[0]);
 
     const messageVan = `Hola Viajes Quality, Quiero reservar. ${duration}d. - del ${departureDateValue} al ${arrivalDateValue}.
     - Salida: ${sourceRefValue}
