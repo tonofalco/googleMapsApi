@@ -16,7 +16,7 @@ export const useConfigStore = () => {
             // console.log(config);
             dispatch(onLoadCosts(config)); // Pasar 'usuarios' como argumento
         } catch (error) {
-            console.log('Error cargando usuarios');
+            console.log('Error cargando costos');
             console.log(error);
         }
     };
