@@ -10,7 +10,7 @@ export const Carrousel = ({ costsValue }) => {
 
     
 
-    console.log(costsValue);
+    // console.log(costsValue);
 
     const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
 
