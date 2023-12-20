@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
-import { propTypes } from 'react-bootstrap/esm/Image';
-// import { useConfigStore } from '../hooks/useConfigStore';
+// import PropTypes from 'prop-types';
+// import { propTypes } from 'react-bootstrap/esm/Image';
+
 // import { useEffect, useState } from 'react';
 
 export const CalculateQuote = ({
@@ -19,6 +19,8 @@ export const CalculateQuote = ({
 
     const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
 
+    // const { sendVanQuote, sendSprinterQuote } = useWhatsApp();
+    
     const calcularCosto = (dias, costoPorDia) => {
         let costo = (dias * costoPorDia);
         return costo <= 0 ? 0 : costo;
@@ -33,7 +35,7 @@ export const CalculateQuote = ({
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, diaExtraEntreSemanaBase);
     const diasFinSemanaCosto = calcularCosto(weekendsCount, diaExtraFinSemanaBase);
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
-    console.log(diaExtraEntreSemanaBase, diaExtraFinSemanaBase);
+    // console.log(diaExtraEntreSemanaBase, diaExtraFinSemanaBase);
     //*CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 14
     const multKms = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
@@ -85,19 +87,19 @@ export const CalculateQuote = ({
     };
 
     // Define las PropTypes para el componente Information
-    CalculateQuote.propTypes = {
-        sourceRefValue: PropTypes.string,
-        destinationRefValue: PropTypes.string,
-        departureRefvalue: PropTypes.string,
-        arrivalRefValue: PropTypes.string,
-        distance: PropTypes.string,
-        time: PropTypes.string,
-        duration: PropTypes.string,
-        weekdaysCount: PropTypes.number,
-        weekendsCount: PropTypes.number,
-        stops: propTypes.isRequiredButNullable,
-        costsValue: propTypes.isRequiredButNullable,
-    };
+    // CalculateQuote.propTypes = {
+    //     sourceRefValue: PropTypes.string,
+    //     destinationRefValue: PropTypes.string,
+    //     departureRefvalue: PropTypes.string,
+    //     arrivalRefValue: PropTypes.string,
+    //     distance: PropTypes.string,
+    //     time: PropTypes.string,
+    //     duration: PropTypes.string,
+    //     weekdaysCount: PropTypes.number,
+    //     weekendsCount: PropTypes.number,
+    //     stops: propTypes.isRequiredButNullable,
+    //     costsValue: propTypes.isRequiredButNullable,
+    // };
 
     return (
         <>

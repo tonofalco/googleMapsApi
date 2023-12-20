@@ -13,18 +13,18 @@ export const MapsClientPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { costsValue, startLoadingCosts } = useConfigStore();
+  const { costsValue, loading, startLoadingCosts } = useConfigStore();
 
   useEffect(() => {
-      if (!isLoading) {
-          const fetchData = async () => {
-              setIsLoading(true);
-              await startLoadingCosts();
-          };
+    if (!isLoading) {
+      const fetchData = async () => {
+        setIsLoading(true);
+        await startLoadingCosts();
+      };
 
-          fetchData();
-      }
-  }, [isLoading, startLoadingCosts, costsValue]);
+      fetchData();
+    }
+  }, [isLoading, startLoadingCosts]);
 
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState(0);
@@ -160,11 +160,11 @@ export const MapsClientPage = () => {
 
         setWeekdaysCount(weekdays.length);
         setWeekendsCount(weekends.length);
-        
+
       } else {
         console.error('Error al calcular la ruta:', status);
       }
-      
+
     };
 
     const directionsService = new window.google.maps.DirectionsService();
@@ -197,19 +197,21 @@ export const MapsClientPage = () => {
     console.log('Cambio validacion Captcha');
   }
 
-  if (!isLoaded) {
-    return <div>Cargando...</div>
+  if (!isLoaded && loading || costsValue == {} ) {
+    return <div>Cargando aplicacion...</div>
   }
 
 
   return (
     <>
-
+    {costsValue ? (
       <div className="container">
 
         <div className="row"> {/**CARROUSEL DE IMAGENES */}
           <div className="col-12 d-flex aling-items-center justify-content-center">
-            <Carrousel />
+            <Carrousel
+              costsValue={costsValue}
+            />
           </div>
         </div>
 
@@ -417,6 +419,10 @@ export const MapsClientPage = () => {
         </div>
 
       </div >
+
+      ):(
+        <div>conectando con BD... </div>
+      )} 
 
     </>
   );
