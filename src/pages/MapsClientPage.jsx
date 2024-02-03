@@ -12,7 +12,6 @@ export const MapsClientPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [time, setTime] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
 
@@ -55,6 +54,10 @@ export const MapsClientPage = () => {
 
   const calculateRoute = async (event) => {
     event.preventDefault();
+
+    // Limpiar la respuesta de direcciones actual
+    setMapKey((prevKey) => prevKey + 1);
+    setDirectionsResponse(null);
 
     const SourceAndDestination = [sourceRef.current.value, destinationRef.current.value];
     const departureDate = new Date(departureDateRef.current.value);
@@ -152,7 +155,6 @@ export const MapsClientPage = () => {
             setStops={setStops}
             setDirectionsResponse={setDirectionsResponse}
             setDistance={setDistance}
-            setDuration={setDuration}
             setMapKey={setMapKey}
             captcha={captcha}
             calculateRoute={calculateRoute}

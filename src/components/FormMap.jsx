@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import ReCAPTCHA from 'react-google-recaptcha'
 
 
-export const FormMap = ({ sourceRef, destinationRef, arrivalDateRef, departureDateRef, autocompleteRef, captcha, stops, setStops, setDirectionsResponse, setDistance, setDuration, setMapKey, calculateRoute }) => {
+export const FormMap = ({ sourceRef, destinationRef, arrivalDateRef, departureDateRef, autocompleteRef, captcha, stops, setStops, setDirectionsResponse, setDistance, setMapKey, calculateRoute }) => {
 
     const [selectedOption, setSelectedOption] = useState('');
     const [currentStop, setCurrentStop] = useState('');
@@ -45,7 +45,6 @@ export const FormMap = ({ sourceRef, destinationRef, arrivalDateRef, departureDa
     const clearRoute = () => {
         setDirectionsResponse(null);
         setDistance(0);
-        setDuration(0);
         setStops([])
         sourceRef.current.value = '';
         destinationRef.current.value = '';
