@@ -169,7 +169,6 @@ export const MapsClientPage = () => {
                   stops={stops}
                   time={time}
                   distance={distance}
-                  duration={duration}
                   totalDays={totalDays}
                   weekdaysCount={weekdaysCount}
                   weekendCount={weekendCount}

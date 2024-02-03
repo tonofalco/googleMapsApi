@@ -8,7 +8,6 @@ export const CalculateQuote = ({
     arrivalRefValue,
     distance,
     time,
-    duration,
     weekdaysCount,
     weekendCount,
     stops,
@@ -66,14 +65,14 @@ export const CalculateQuote = ({
     // console.log(stops.length);
     // console.log(stops[0]);
 
-    const messageVan = `Hola Viajes Quality, Quiero reservar. ${duration}d. - del ${departureDateValue} al ${arrivalDateValue}.
+    const messageVan = `Hola Viajes Quality, Quiero reservar. ${totalDays}d. - del ${departureDateValue} al ${arrivalDateValue}.
     - Salida: ${sourceRefValue}
     - Parada: ${paradaValue}
     - Destino: ${destinationRefValue}
     Toyota Van ${plazas} plazas | con precio total de: $${formattedPrecioTotal} ;
     __VQC__`;
 
-    const messageSprinter = `Hola Viajes Quality, Quiero reservar. 2d. - del ${departureDateValue} al ${arrivalDateValue}.
+    const messageSprinter = `Hola Viajes Quality, Quiero reservar. ${totalDays}d.. - del ${departureDateValue} al ${arrivalDateValue}.
     Salida: ${sourceRefValue}
     Parada: ${paradaValue}
     Destino: ${destinationRefValue}
