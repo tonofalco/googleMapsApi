@@ -1,7 +1,5 @@
-// import PropTypes from 'prop-types';
-// import { propTypes } from 'react-bootstrap/esm/Image';
+import { useConfigStore } from "../hooks/useConfigStore";
 
-// import { useEffect, useState } from 'react';
 
 export const CalculateQuote = ({
     sourceRefValue,
@@ -12,42 +10,48 @@ export const CalculateQuote = ({
     time,
     duration,
     weekdaysCount,
-    weekendsCount,
+    weekendCount,
     stops,
-    costsValue
+    totalDays,
+    multKms
 }) => {
 
-    const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
+    const { costsValue, costsValueWeekend } = useConfigStore();
 
-    // const { sendVanQuote, sendSprinterQuote } = useWhatsApp();
-    
+    const { hotel_es, food_es, park_es, renueve_es, hotel_fs, food_fs, park_fs, renueve_fs, gasoline, salary, booths, maintenance, utility, supplement } = costsValue
+    const { gasoline: gasolineEs, salary: salaryEs, booths: boothsEs, maintenance: maintenanceEs, utility: utilityEs, supplement: supplementEs } = costsValueWeekend
+
+
     const calcularCosto = (dias, costoPorDia) => {
         let costo = (dias * costoPorDia);
         return costo <= 0 ? 0 : costo;
     };
 
 
-    //*CALCULO DISTANCIA FINAL
+    //CALCULO DISTANCIA FINAL
     const distancia = Math.round(parseFloat(distance * 2))
-    //*CALCULOS POR DIAS EXTRAS
+    //CALCULO MULTKMS PRIMER DIA
+    const multKmsValueEs = distancia <= 400 ? gasolineEs + salaryEs + boothsEs + maintenanceEs + utilityEs + supplementEs : gasolineEs + salaryEs + maintenanceEs + boothsEs + utilityEs;
+    const multKmsValueFs = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
+    const multKmsValue = (multKms ? multKmsValueEs : multKmsValueFs)
+    //CALCULOS POR DIAS EXTRAS
     const diaExtraEntreSemanaBase = hotel_es + food_es + park_es + renueve_es
     const diaExtraFinSemanaBase = hotel_fs + food_fs + park_fs + renueve_fs
     const diasEntreSemanaCosto = calcularCosto(weekdaysCount, diaExtraEntreSemanaBase);
-    const diasFinSemanaCosto = calcularCosto(weekendsCount, diaExtraFinSemanaBase);
+    const diasFinSemanaCosto = calcularCosto(weekendCount, diaExtraFinSemanaBase);
     const totalDiasCosto = diasEntreSemanaCosto + diasFinSemanaCosto
-    // console.log(diaExtraEntreSemanaBase, diaExtraFinSemanaBase);
-    //*CALCULOS COSTO Y PRECIO VAN Y SPRINTER
+    //CALCULOS COSTO Y PRECIO VAN Y SPRINTER
     let plazas = 14
-    const multKms = distancia <= 400 ? gasoline + salary + maintenance + booths + utility + supplement : gasoline + salary + maintenance + booths + utility;
-    const costoTotal = (distancia * multKms)
+    const costoTotal = (distancia * multKmsValue)
     const precioTotal = Math.round(parseFloat(costoTotal) + parseFloat(totalDiasCosto))
-    const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+    const formattedPrecioTotal = parseFloat(precioTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     let plazasSpt = 18
-    const multKmsSpt = multKms + 3
+    const multKmsSpt = multKmsValue + 3
     const costoTotalSpt = (distancia * multKmsSpt)
     const precioTotalSpt = Math.round(parseFloat(costoTotalSpt) + parseFloat(totalDiasCosto))
-    const formattedPrecioTotalSpt = parseFloat(precioTotalSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+    const formattedPrecioTotalSpt = parseFloat(precioTotalSpt).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
 
     //* Localizacion de calendario
     const departureDateValue = departureRefvalue
@@ -96,7 +100,7 @@ export const CalculateQuote = ({
     //     time: PropTypes.string,
     //     duration: PropTypes.string,
     //     weekdaysCount: PropTypes.number,
-    //     weekendsCount: PropTypes.number,
+    //     weekendCount: PropTypes.number,
     //     stops: propTypes.isRequiredButNullable,
     //     costsValue: propTypes.isRequiredButNullable,
     // };
@@ -110,7 +114,7 @@ export const CalculateQuote = ({
                 <div><b>Destino:</b> {destinationRefValue}</div>
                 <div><b>Distancia:</b> {distancia} kms</div>
                 <div><b>Tiempo de recorido:</b> {time}</div>
-                <div><b>Dias:</b> {duration}</div>
+                <div><b>Dias:</b> {totalDays}</div>
                 <br /><hr />
 
                 <h3 className='mb-3'>PRECIOS</h3>
@@ -148,15 +152,8 @@ export const CalculateQuote = ({
                     <li><small>Precio aproximado, para reservar porfavor comuniquese con la empresa.</small></li>
                     <li><small>Precio final no inlcuye estacionamientos</small></li>
 
-
                 </ul>
                 <hr />
-
-
-                {/* <div className='d-flex aling-items-center justify-content-center'>
-                    <button className="btn btn-success me-5" onClick={sendVanQuote}>Reservar van <i className="fa-brands fa-whatsapp"></i></button>
-                    <button className="btn btn-success" onClick={sendSprinterQuote}>Reservar sprinter <i className="fa-brands fa-whatsapp"></i></button>
-                </div> */}
             </div>
         </>
     )
