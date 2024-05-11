@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import Swal from 'sweetalert2';
-import { eachDayOfInterval, getDay, addDays  } from 'date-fns';
+import { eachDayOfInterval, getDay, addDays } from 'date-fns';
 import { InfoInclude, InfoTransport, CalculateQuote, Carrousel, Map, FormMap } from '../components/';
 import { useConfigStore } from '../hooks/useConfigStore';
+
+import { ColorRing } from 'react-loader-spinner';
 
 const libraries = ['places'];
 
@@ -107,7 +109,7 @@ export const MapsClientPage = () => {
         setTime(`${hours} h. ${minutes} min.`); // Formato de horas y minutos
 
         if (departureDate && arrivalDate) {
-          const startDate = addDays(departureDate, 1); 
+          const startDate = addDays(departureDate, 1);
           const daysInterval = eachDayOfInterval({ start: departureDate, end: arrivalDate });
           const totalDaysValue = daysInterval.length;
           const weekdaysCountValue = daysInterval.slice(2).filter(date => getDay(date) >= 1 && getDay(date) <= 5).length;
@@ -145,6 +147,9 @@ export const MapsClientPage = () => {
           {/**CARROUSEL DE IMAGENES */}
           <Carrousel costsValue={costsValue} />
           {/* DATOS DE ENTRADA */}
+
+
+
           < FormMap
             sourceRef={sourceRef}
             destinationRef={destinationRef}
@@ -199,7 +204,20 @@ export const MapsClientPage = () => {
           </div>
         </div >
       ) : (
-        <div>conectando con BD... </div>
+        <div className='d-flex flex-column vh-100 justify-content-center align-items-center'>
+          <ColorRing
+            visible={true}
+            height="125"
+            width="125"
+            ariaLabel="color-ring-loading"
+            wrapperStyle={{}}
+            wrapperClass="color-ring-wrapper"
+            colors={['#e15b64', '#60aaf4', '#f8b26a', '#abbd81', '#849b87']}
+          />
+          <h5>Conectando...</h5>
+
+        </div>
+
       )}
     </>
   );
