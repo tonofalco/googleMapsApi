@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
-import Swal from 'sweetalert2';
 import { eachDayOfInterval, getDay, addDays } from 'date-fns';
-import { InfoInclude, InfoTransport, CalculateQuote, Carrousel, Map, FormMap } from '../components/';
-import { useConfigStore } from '../hooks/useConfigStore';
-
+import Swal from 'sweetalert2';
 import { ColorRing } from 'react-loader-spinner';
+
+import { useConfigExtraDayStore, useConfigStore } from '../hooks';
+import { InfoInclude, InfoTransport, CalculateQuote, Carrousel, Map, FormMap } from '../components/';
+
 
 const libraries = ['places'];
 
@@ -34,6 +35,7 @@ export const MapsClientPage = () => {
   const captcha = useRef(null)
 
   const { costsValue, loading, startLoadingCosts, startLoadingEsCosts } = useConfigStore();
+  const {startLoadingCostsExtraDay} = useConfigExtraDayStore()
 
   useEffect(() => {
     if (!isLoading) {
@@ -41,12 +43,13 @@ export const MapsClientPage = () => {
         setIsLoading(true);
         await Promise.all([
           startLoadingCosts(),
-          startLoadingEsCosts()
+          startLoadingEsCosts(),
+          startLoadingCostsExtraDay(),
         ]);
       };
       fetchData();
     }
-  }, [isLoading]);
+  }, []);
 
 
   const { isLoaded } = useJsApiLoader({
@@ -145,11 +148,10 @@ export const MapsClientPage = () => {
       {costsValue ? (
         <div className="container">
           {/**CARROUSEL DE IMAGENES */}
-          <Carrousel costsValue={costsValue} />
+          <Carrousel
+            costsValue={costsValue}
+          />
           {/* DATOS DE ENTRADA */}
-
-
-
           < FormMap
             sourceRef={sourceRef}
             destinationRef={destinationRef}
@@ -165,6 +167,7 @@ export const MapsClientPage = () => {
             calculateRoute={calculateRoute}
           />
           {/* INFORMACION DE LA COTIZACION */}
+          <hr />
           <div className="row" id="datos-salida">
             <div className="col-md-4 mt-4" >  {/*DATOS DE SALIDA */}
               {captchaValue && directionsResponse ? (

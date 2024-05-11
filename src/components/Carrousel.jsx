@@ -1,25 +1,24 @@
-// import { propTypes } from 'react-bootstrap/esm/Image';
+
 import { Carousel } from 'react-bootstrap';
 
-import {CDMX, Puebla, Taxco} from '../img'
 
+import { CDMX, Puebla, Taxco } from '../img'
 import '../styles/carrousel.css'
+
+
 
 
 export const Carrousel = ({ costsValue }) => {
 
-    
-
-    // console.log(costsValue);
-
     const { gasoline, salary, booths, maintenance, utility, supplement } = costsValue
+
 
     const multKms = (distancia) => {
         let precio = 0
         distancia <= 400
             ? precio = gasoline + salary + maintenance + booths + utility + supplement
             : precio = gasoline + salary + maintenance + booths + utility;
-            // console.log(precio);
+        // console.log(precio);
 
         return (distancia * precio).toLocaleString('es-MX', {
             style: 'currency',
@@ -42,7 +41,7 @@ export const Carrousel = ({ costsValue }) => {
                         <div className="sombra pb-1">
 
                             <h1>Chilpancingo - CDMX</h1>
-                            <h3>Desde {multKms(500)}</h3>
+                            <h3>Desde {multKms(550)}</h3>
                             <h5>Ruta popular</h5>
                         </div>
                     </Carousel.Caption>
@@ -56,7 +55,7 @@ export const Carrousel = ({ costsValue }) => {
                     <Carousel.Caption>
                         <div className="sombra pb-1">
                             <h1>Chilpancingo - Puebla</h1>
-                            <h3>Desde {multKms(300)}</h3>
+                            <h3>Desde {multKms(561.5)}</h3>
                             <h5>Ruta popular</h5>
                         </div>
                     </Carousel.Caption>
@@ -71,7 +70,7 @@ export const Carrousel = ({ costsValue }) => {
                     <Carousel.Caption>
                         <div className="sombra pb-1">
                             <h1>Chilpancingo - Taxco</h1>
-                            <h3>Desde {multKms(400)}</h3>
+                            <h3>Desde {multKms(282)}</h3>
                             <h5>Ruta popular</h5>
                         </div>
                     </Carousel.Caption>

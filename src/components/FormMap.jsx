@@ -9,7 +9,7 @@ export const FormMap = ({ sourceRef, destinationRef, arrivalDateRef, departureDa
     const [selectedOption, setSelectedOption] = useState('');
     const [currentStop, setCurrentStop] = useState('');
 
-    const cityOptions = ['Chilpancingo'];
+    const cityOptions = ['Chilpancingo de los Bravos'];
     const handleOptionChange = (event) => setSelectedOption(event.target.value);
     const onChangeCaptcha = () => console.log('Cambió validacion');
 
