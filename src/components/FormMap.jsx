@@ -61,7 +61,7 @@ export const FormMap = ({ sourceRef, destinationRef, arrivalDateRef, departureDa
 
     return (
         <>
-            <form className="row mt-5 mb-4 justify-content-center align-items-center" onSubmit={calculateRoute}>
+            <form className="row mt-4 mb-4 justify-content-center align-items-center" onSubmit={calculateRoute}>
 
                 {/* PUNTOS A CALCULAR */}
                 <div className="col-sm-6 col-12">

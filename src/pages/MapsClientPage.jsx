@@ -3,6 +3,8 @@ import { useJsApiLoader } from '@react-google-maps/api';
 import { eachDayOfInterval, getDay, addDays } from 'date-fns';
 import Swal from 'sweetalert2';
 import { ColorRing } from 'react-loader-spinner';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
 import { useConfigExtraDayStore, useConfigStore } from '../hooks';
 import { InfoInclude, InfoTransport, CalculateQuote, Carrousel, Map, FormMap } from '../components/';
@@ -35,7 +37,7 @@ export const MapsClientPage = () => {
   const captcha = useRef(null)
 
   const { costsValue, loading, startLoadingCosts, startLoadingEsCosts } = useConfigStore();
-  const {startLoadingCostsExtraDay} = useConfigExtraDayStore()
+  const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
 
   useEffect(() => {
     if (!isLoading) {
@@ -145,66 +147,99 @@ export const MapsClientPage = () => {
 
   return (
     <>
+
+
+
+
+
       {costsValue ? (
+
+
         <div className="container">
+
           {/**CARROUSEL DE IMAGENES */}
           <Carrousel
             costsValue={costsValue}
           />
-          {/* DATOS DE ENTRADA */}
-          < FormMap
-            sourceRef={sourceRef}
-            destinationRef={destinationRef}
-            arrivalDateRef={arrivalDateRef}
-            departureDateRef={departureDateRef}
-            autocompleteRef={autocompleteRef}
-            stops={stops}
-            setStops={setStops}
-            setDirectionsResponse={setDirectionsResponse}
-            setDistance={setDistance}
-            setMapKey={setMapKey}
-            captcha={captcha}
-            calculateRoute={calculateRoute}
-          />
-          {/* INFORMACION DE LA COTIZACION */}
-          <hr />
-          <div className="row" id="datos-salida">
-            <div className="col-md-4 mt-4" >  {/*DATOS DE SALIDA */}
-              {captchaValue && directionsResponse ? (
-                <CalculateQuote
-                  sourceRefValue={sourceRef.current.value}
-                  destinationRefValue={destinationRef.current.value}
-                  departureRefvalue={departureDateRef.current.value}
-                  arrivalRefValue={arrivalDateRef.current.value}
-                  stops={stops}
-                  time={time}
-                  distance={distance}
-                  totalDays={totalDays}
-                  weekdaysCount={weekdaysCount}
-                  weekendCount={weekendCount}
-                  multKms={multKms}
-                />
-              ) : <h3>Esperando cotizacion...</h3>
-              }
-            </div>
+          <Tabs
+            defaultActiveKey="Cotizacion"
+            id="uncontrolled-tab-example"
+            className="my-3"
+          >
+            <Tab eventKey="Cotizacion" title="Cotizacion">
+              {/* DATOS DE ENTRADA */}
+              < FormMap
+                sourceRef={sourceRef}
+                destinationRef={destinationRef}
+                arrivalDateRef={arrivalDateRef}
+                departureDateRef={departureDateRef}
+                autocompleteRef={autocompleteRef}
+                stops={stops}
+                setStops={setStops}
+                setDirectionsResponse={setDirectionsResponse}
+                setDistance={setDistance}
+                setMapKey={setMapKey}
+                captcha={captcha}
+                calculateRoute={calculateRoute}
+              />
+              {/* INFORMACION DE LA COTIZACION */}
+              <hr />
+              <div className="row" id="datos-salida">
+                <div className="col-md-4 mt-4" >  {/*DATOS DE SALIDA */}
+                  {captchaValue && directionsResponse ? (
+                    <CalculateQuote
+                      sourceRefValue={sourceRef.current.value}
+                      destinationRefValue={destinationRef.current.value}
+                      departureRefvalue={departureDateRef.current.value}
+                      arrivalRefValue={arrivalDateRef.current.value}
+                      stops={stops}
+                      time={time}
+                      distance={distance}
+                      totalDays={totalDays}
+                      weekdaysCount={weekdaysCount}
+                      weekendCount={weekendCount}
+                      multKms={multKms}
+                    />
+                  ) : <h3>Esperando cotizacion...</h3>
+                  }
+                </div>
 
-            <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
-              <div style={{ height: 'calc(95vh - 64px)' }}>
-                <Map
-                  mapKey={mapKey}
-                  directionsResponse={directionsResponse} />
-              </div>
-            </div>
+                <div className="col-md-8 mb-5"> {/**MAPA DE GOOGLE */}
+                  <div style={{ height: 'calc(95vh - 64px)' }}>
+                    <Map
+                      mapKey={mapKey}
+                      directionsResponse={directionsResponse} />
+                  </div>
+                </div>
 
-            <div className="row mt-3"> {/**INFORMACION EXTRA */}
-              <div className="col-md-6 col-12">
-                <InfoInclude />
+
               </div>
-              <div className="col-md-6 col-12 mt-md-0 mt-3">
-                <InfoTransport />
+            </Tab>
+
+            <Tab eventKey="Incluye" title="Incluye">
+              <div className="row mt-4"> {/**INFORMACION EXTRA */}
+                <div className="col-md-6 col-12">
+                  <InfoInclude />
+                </div>
+                <div className="col-md-6 col-12 mt-md-0 mt-3">
+                  <InfoTransport />
+                </div>
+
+                <div className="col-12 mb-4">
+                  <div className="text-center bg-dark text-white" style={{ marginBottom: "20px", border: '2px solid #333', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
+                    <h2>CLAUSULAS DEL SERVICIO</h2>
+                  </div>
+                  <ol className="list-group list-group">
+                    <li className="list-group-item">En caso de no presentarse en la salida, el anticipo queda a beneficio de la empresa.</li>
+                    <li className="list-group-item">El contratante será responsable de los desperfectos causados a la unidad en servicio.</li>
+                    <li className="list-group-item">Precio aproximado, para reservar porfavor comuniquese con la empresa.</li>
+                    <li className="list-group-item">Precio final no inlcuye estacionamientos.</li>
+                  </ol>
+                </div>
+
               </div>
-            </div>
-          </div>
+            </Tab>
+          </Tabs>
         </div >
       ) : (
         <div className='d-flex flex-column vh-100 justify-content-center align-items-center'>

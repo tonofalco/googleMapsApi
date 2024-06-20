@@ -141,7 +141,7 @@ export const CalculateQuote = ({ sourceRefValue, destinationRefValue, departureR
                             <br />
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item eventKey="1">
+                    {/* <Accordion.Item eventKey="1">
                         <Accordion.Header>CLAUSULAS DEL SERVICIO</Accordion.Header>
                         <Accordion.Body>
                             <div className="row mx-1 ">
@@ -155,7 +155,7 @@ export const CalculateQuote = ({ sourceRefValue, destinationRefValue, departureR
                                 </div>
                             </div>
                         </Accordion.Body>
-                    </Accordion.Item>
+                    </Accordion.Item> */}
                 </Accordion>
 
                 <hr />
