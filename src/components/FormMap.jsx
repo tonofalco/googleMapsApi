@@ -24,8 +24,8 @@ export const FormMap = ({ sourceRef, destinationRef, arrivalDateRef, departureDa
         if (stops.length < 1) {
             if (autocompleteRef.current) {
                 const place = autocompleteRef.current.getPlace();
-                if (place && place.formatted_address) {
-                    setStops([...stops, place.formatted_address]);
+                if (place && place.name) {
+                    setStops([...stops, place.name]);
                     setCurrentStop(''); // Restablecer el campo de entrada
                 } else {
                     Swal.fire('Ingrese una parada válida', '', 'warning');
