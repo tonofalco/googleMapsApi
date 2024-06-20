@@ -14,7 +14,7 @@ export const Map = ({ mapKey, directionsResponse }) => {
         key={mapKey}
         center={center}
         zoom={13}
-        mapContainerStyle={{ width: "100%", height: "98%", borderRadius: "2rem" }}
+        mapContainerStyle={{ width: "100%", height: "100%", borderRadius: "2rem" }}
         options={{
           streetViewControl: false,
           zoomControl: false,

@@ -9,7 +9,7 @@ export const InfoTransport = () => {
   return (
     <>
       <div className="text-center bg-dark text-white" style={{ marginBottom: "20px", border: '2px solid #333', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-        <h2>NUESTRAS UNIDADES </h2>
+        <h2>UNIDADES </h2>
       </div>
 
       <div className='container'>
