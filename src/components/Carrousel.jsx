@@ -2,7 +2,7 @@
 import { Carousel } from 'react-bootstrap';
 
 
-import { CDMX, Puebla, Taxco } from '../img'
+import { CDMX, Puebla, Queretaro } from '../img'
 import '../styles/carrousel.css'
 
 
@@ -64,13 +64,13 @@ export const Carrousel = ({ costsValue }) => {
                 <Carousel.Item>
                     <img
                         className="custom-carousel-image"
-                        src={Taxco}
-                        alt="Taxco"
+                        src={Queretaro}
+                        alt="Queretaro"
                     />
                     <Carousel.Caption>
                         <div className="sombra pb-1">
-                            <h1>Chilpancingo - Taxco</h1>
-                            <h3>Desde {multKms(282)}</h3>
+                            <h1>Chilpancingo - Queretaro</h1>
+                            <h3>Desde {multKms(973)}</h3>
                             <h5>Ruta popular</h5>
                         </div>
                     </Carousel.Caption>
