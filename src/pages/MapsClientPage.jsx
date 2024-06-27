@@ -36,7 +36,7 @@ export const MapsClientPage = () => {
   const autocompleteRef = useRef(null);
   const captcha = useRef(null)
 
-  const { costsValue, loading, startLoadingCosts, startLoadingEsCosts } = useConfigStore();
+  const { costsValue, costsValueWeekend, loading, startLoadingCosts, startLoadingEsCosts } = useConfigStore();
   const { startLoadingCostsExtraDay } = useConfigExtraDayStore()
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export const MapsClientPage = () => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API,
     libraries: libraries
-  });
+});
 
   const calculateRoute = async (event) => {
     event.preventDefault();
@@ -140,21 +140,16 @@ export const MapsClientPage = () => {
     element.scrollIntoView({ behavior: 'smooth' });
   }
 
-  if (!isLoaded && loading || costsValue == {}) {
-    return <div>Cargando aplicacion...</div>
-  }
+  if (loading || costsValue == null || costsValueWeekend == null) {
+    return <h5>Cargando aplicacion...</h5>
+} else if (!isLoaded) {
+    return <h5>Cargando Mapa...</h5>;
+}
 
 
   return (
     <>
-
-
-
-
-
       {costsValue ? (
-
-
         <div className="container">
 
           {/**CARROUSEL DE IMAGENES */}
